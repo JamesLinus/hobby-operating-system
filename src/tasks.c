@@ -76,11 +76,9 @@ void task_create (unsigned char priority, unsigned long* address,bool cli){
 	*--stack = 0x10;        // GS
 
  
-    kprintf("Entering %d. task\n",AllTasks);
-	Tasks[AllTasks].status = TASK_READY;
+    Tasks[AllTasks].status = TASK_READY;
 	Tasks[AllTasks].stack = (unsigned int)stack;
 	Tasks[AllTasks].PID = AllTasks;
 	
 	AllTasks++;
-	kprintf("now having %d tasks\n",AllTasks);
 }

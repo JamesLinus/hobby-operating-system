@@ -1,4 +1,4 @@
-SOURCES=boot.o main.o kio.o time.o gdt.o gdt_asm.o idt.o idt_asm.o pit.o util.o paging.o pmm.o vmm.o tasks.o
+SOURCES=boot.o main.o kio.o time.o gdt.o gdt_asm.o idt.o idt_asm.o pit.o util.o paging.o pmm.o vmm.o tasks.o hdd.o fs/vfs.o fs/fat32.o
 CFLAGS=-std=c99 -m32 -nostdlib -fno-builtin -nostartfiles -nodefaultlibs
 LDFLAGS=-Tlink.ld -melf_i386
 ASFLAGS=-felf

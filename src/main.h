@@ -14,5 +14,6 @@
 #include "pmm.h"
 #include "paging.h"
 #include "tasks.h"
+#include "hdd.h"
 
 #endif

@@ -74,11 +74,9 @@ void kmain(multiboot_info_t* mbd ) {
 	init_tasks();		kStatus("Tasks","OK",true);
 	
 	task_create(255,(unsigned long*)idleLoop,false);
-	task_create(255,(unsigned long*)loopA,false);
-	task_create(255,(unsigned long*)loopB,false);
-	task_create(255,(unsigned long*)loopC,false);
+	//task_create(255,(unsigned long*)loopA,false);
 	
-//	init_hdd();		kStatus("HDD","OK",true);
+	init_hdd();		kStatus("HDD","OK",true);
 	
 	kprint('>');
 	__asm__ volatile("sti");

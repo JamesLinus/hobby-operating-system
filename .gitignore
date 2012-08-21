@@ -13,6 +13,7 @@ obj/
 *.log
 *.*~
 tmp/
+hdd.img
 *.tmp
 *.bak
 *.swp
