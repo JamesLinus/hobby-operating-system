@@ -49,6 +49,7 @@ static unsigned char kbde[128] = {
 static unsigned int ramAmount;
 
 //void memset(void* ptr, unsigned char off, unsigned long long length);
+char* trim(char* str);
 void memcpy(char *dest, const char *src, unsigned int len);
 int strlen(char* str);
 unsigned int pow(unsigned int base, unsigned int pot);

@@ -5,6 +5,8 @@
 #include "kio.h"
 #include "paging.h"
 
+unsigned int memPages;
+
 typedef struct node{
 	struct node* next;
 	struct node* prev;
@@ -18,5 +20,6 @@ node* heap;
 void init_vmm();
 void* malloc(unsigned int size);
 void free(void* addr);
+unsigned int getMemPages();
 
 #endif

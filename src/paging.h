@@ -14,7 +14,7 @@ extern void* gdt_entry_end;
 extern void* idt_entry_start;
 extern void* idt_entry_end;
 
-extern void* kernel_end;
+extern const void kernel_end;
 	
 extern void* kernel_stack;
 

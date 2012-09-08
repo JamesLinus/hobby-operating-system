@@ -41,6 +41,7 @@ void scroll();
 void kprint(char c);
 void kprintInt(char filler, int amount, int x);
 void kprintHex(char filler, int amount, int num);
+void kprintHexShort(char filler, int amount,unsigned int num);
 void kprintFloat(char filler, int amount, float x);
 void kprintf(char* str,...);
 void kBackspace();

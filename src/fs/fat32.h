@@ -3,6 +3,19 @@
 
 #include "vfs.h"
 
+typedef struct fat32_dir {
+	unsigned char fileName[8];
+	unsigned char ext[3];
+	unsigned char attr;
+	unsigned char reserved1;
+	unsigned char creationTimeSecs[5];
+	unsigned short lastAccessedDate;
+	unsigned short firstClusterNumber;
+	unsigned char lastModification[4];
+	unsigned short lowFirstCluster;
+	unsigned int fileSize;
+} fat32_dir;
+
 typedef struct fat12_16{
 	unsigned char number;
 	unsigned char reserved_1;
@@ -33,7 +46,7 @@ typedef struct fat32 {
 typedef struct bpb {
 	unsigned char jumpBoot[3];     //default: 0x009000EB
 	unsigned char OEMName[8];
-	unsigned short bytesPerSector;   //deafault: 512
+	unsigned short bytesPerSector;   //default: 512
 	unsigned char sectorPerCluster;
 	unsigned short  reservedSectorCount;
 	unsigned char numberofFATs;
@@ -48,6 +61,17 @@ typedef struct bpb {
 	unsigned char extended[54];
 }__attribute__((packed)) bpb;
 
-void fat32_init(unsigned int drive,unsigned int addr,unsigned int offset);
+
+typedef struct fat32_inode {
+	unsigned int drive;
+	unsigned int addr;
+	unsigned int offset;
+	unsigned int sector;
+	unsigned int cluster;
+} fat32_inode;
+
+unsigned int getFirstSector(int i, unsigned int clusterNumber);
+fat32_inode *rInode,*rootInode;
+fs_node* fat32_init(unsigned int drive, unsigned int addr, unsigned int offset);
 
 #endif

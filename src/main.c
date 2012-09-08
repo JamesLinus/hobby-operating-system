@@ -1,6 +1,6 @@
 #include "main.h"
 
- unsigned int initial_esp;
+unsigned int initial_esp;
  
 void idleLoop(){
 	while (1){
@@ -32,16 +32,15 @@ void kmain(multiboot_info_t* mbd ) {
 	command_offset = 0;
 	kclear();
 	extern void* kernel_stack;
-	kprintf("%x\n",kernel_stack);
 	//unsigned long ram = InitAmountOfRam(mbd);
 	//kprintf("[ RAM: %l KB / %l MB ]\n",ram,ram/1024);
 	__asm__ volatile("cli");
 	
-	init_gdt();		kStatus("GDT","OK",true);
+	init_gdt();	//	kStatus("GDT","OK",true);
 
-	init_idt();		kStatus("IDT","OK",true);
+	init_idt();	//	kStatus("IDT","OK",true);
 	
-	init_pmm(mbd);	kStatus("PMM","OK",true);
+	init_pmm(mbd);//	kStatus("PMM","OK",true);
 	
 	/*unsigned int* addr1 = pmm_alloc();
 	kprintf("pmm_alloc %x\n",addr1);
@@ -67,11 +66,11 @@ void kmain(multiboot_info_t* mbd ) {
 	kprintf("pmm_alloc %x\n",addr4);
 	
 	kprintf("----------------\n");*/
-	init_paging();		kStatus("Paging","OK",true);	
+	init_paging();	//	kStatus("Paging","OK",true);	
 	
-	init_vmm();		kStatus("VMM","OK",true);
+	init_vmm();	//	kStatus("VMM","OK",true);
 	
-	init_tasks();		kStatus("Tasks","OK",true);
+	init_tasks();	//	kStatus("Tasks","OK",true);
 	
 	task_create(255,(unsigned long*)idleLoop,false);
 	//task_create(255,(unsigned long*)loopA,false);

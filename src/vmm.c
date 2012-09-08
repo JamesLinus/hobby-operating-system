@@ -4,11 +4,14 @@
 #define EMPTY 0
 #define USED 1
 
+unsigned int getMemPages(){ 
+	return memPages;
+}
+
 void init_vmm(){
-	
 	kernel_context->pagedir = 0x400000;
 	map_page(kernel_context,heap,heap);
-	heap->addr = heap;
+	heap->addr = (unsigned long)heap+sizeof(node);
 	heap->size = 0x1000-sizeof(node);
 	heap->flags = EMPTY;
 	heap->next = NULL;
@@ -26,16 +29,22 @@ void* malloc(unsigned int size){
 			if (current->flags == EMPTY){
 				//kprintf(" | using\n");
 				//need to make block smaller
-				struct node* n = (current->addr+size+sizeof(node));
-				n->flags = EMPTY;
-				n->prev = current;
-				n->next = current->next;
-				current->next = n;
-				n->size = current->size-size-sizeof(node);
-				current->size = size;
-				n->addr = current->addr+size+sizeof(node);
-				n->flags = EMPTY;
-				current->flags = USED;
+				//kprintf("found block with %d, wanting %d ",current->size,size);
+				if (current->size-size > sizeof(node)){
+					unsigned int sz = current->size;
+					struct node* n = ((void*)current)+sizeof(node)+size;
+					//kprintf("making current=%x / %x + %d new at %x\n",current,current->addr,sizeof(node)+size,n);
+					n->flags = EMPTY;
+					n->prev = current;
+					n->next = current->next;
+					current->next = n;
+					n->size = current->size-size-sizeof(node);
+					current->size = size;
+					n->addr = (unsigned long)n+sizeof(node);
+					n->flags = EMPTY;
+					current->flags = USED;
+					//kprintf("giving out %x\n",current->addr);
+				}
 				return current->addr;
 			} //else kprintf("\n");
 		}
@@ -45,7 +54,7 @@ void* malloc(unsigned int size){
 	}while (current != NULL);
 	unsigned int nr = size/(0x1000-sizeof(node));
 	if (nr*(0x1000-sizeof(node)) < size) nr++;
-	void* i1= pmm_alloc(); nr--;
+	void* i1= pmm_alloc(); nr--; memPages++;
 	map_page(kernel_context,i1,i1);
 	//adding new node to the end
 	struct node* n = i1;
@@ -53,11 +62,11 @@ void* malloc(unsigned int size){
 	n->prev = current;
 	n->next =NULL;
 	n->size = 0x1000-sizeof(node);
-	n->addr = i1+sizeof(node);
+	n->addr = (unsigned long)i1+sizeof(node);
 	n->flags = EMPTY;		
 	//sizing it up!
 	for(unsigned int i = 0;i<nr;i++){
-		void* i1= pmm_alloc();
+		void* i1= pmm_alloc(); memPages++;
 		map_page(kernel_context,i1,i1);
 		n->size += 0x1000;		
 	}

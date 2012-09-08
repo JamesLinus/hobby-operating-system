@@ -91,9 +91,23 @@ void kprintSafe(char c){
 
 void kprint(char c){
 	int temp = (line_y*80 + line_x)*2;
-	videoram[temp] = c;
-	videoram[temp+1] = color;			
-	line_x++;
+	switch (c){
+		case '\r': line_x = 0;
+					break;
+		case '\b': line_x--;
+					break;
+		case '\n': 	line_y++; 
+				line_x = 0; 
+				scroll();
+				break;
+		case '\t': line_x+=8 & ~(8-1); 	break;
+		default:
+			videoram[temp] = c;
+			videoram[temp+1] = color;			
+			line_x++;
+			break;
+	}			
+	
 	if (line_x>=80){
 		line_x=0;
 		line_y++;	
@@ -164,6 +178,23 @@ void kprintHex(char filler,int amount,int num){
 	}
 }
 
+void kprintHexShort(char filler,int amount,unsigned int num){
+	bool nonZero = true;
+	if (num==0){
+		kprintf("00");
+		return;
+	}
+	int j = -1;
+	char ar[16]={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+	while (num>16){
+		unsigned int x = num%16;
+		kprint(ar[x+1]);
+		num = num-x;
+		num /= 10;
+	}	
+	kprintf(ar[num+1]);
+}
+
 void kprintFloat(char filler,int amount,float x){
 	kprintInt(' ',0,(int)x);
 	kprint('.');
@@ -199,6 +230,9 @@ void kprintf(char* str,...){
 					case 'x': end= true;
 							kprintHex(filler,amount,va_arg(list,int));
 							break;
+					case 'X': end= true;
+							kprintHexShort(filler,amount,va_arg(list,unsigned int));
+							break;
 					case 'l': end= true;
 							kprintInt(filler,amount,va_arg(list,long));
 							break;
@@ -226,15 +260,6 @@ void kprintf(char* str,...){
 		} 
 		else {
 			switch (str[i]){
-				case '\r': line_x = 0;
-							break;
-				case '\b': line_x--;
-							break;
-				case '\n': 	line_y++; line_x = 0; 
-						scroll();
-						update_cursor();
-						break;
-				case '\t': line_x+=8 & ~(8-1); 	break;
 				default: 	kprint(str[i]);		break;
 			}
 		}						

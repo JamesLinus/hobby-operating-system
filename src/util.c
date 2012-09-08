@@ -1,3 +1,4 @@
+#include "kio.h"
 #include "util.h"
 
 /*void memset(void* ptr, unsigned char off, unsigned long long length){
@@ -121,13 +122,37 @@ int strlen(char* str){
 bool strcmp(char* str1,char* str2){
 	int i = 0;
 	while(str1[i]!='\0'){
-		if (str1[i] != str2[i]) return false;
+		if (str1[i] != str2[i]){
+			return false;
+		}
 		i++;
 	}
 	if (str1[i]=='\0' && str2[i]!='\0') return false;
 	if (str1[i]!='\0' && str2[i]=='\0') return false;
 	return true;
 }
+
+char* trim(char* str){
+	unsigned int start = -1;
+	unsigned int end = -1;
+	
+	unsigned int i = 0;
+	while (str[i] == ' ' && str[i] != '\0') i++;
+	if (str[i] ==  '\0') start = 0;
+	else start = i;
+
+	i = strlen(str)-1;
+	while (str[i] == ' ' && i>=0) i--;
+	i++;
+	end = i;
+	
+	char* ret = (char*)malloc(sizeof(char)*(end-start));
+	for(unsigned int i = start;i<end-start;i++){
+		ret[i] = str[start+i];
+	}
+	return ret;
+}
+
 bool strStart(char* str1,char* str2){
 	int i = 0;
 	while(str2[i]!='\0'){
